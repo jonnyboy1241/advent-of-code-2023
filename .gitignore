@@ -1,1 +1,6 @@
 .venv/
+inputs/
+
+.idea/
+
+*.pyc
