@@ -11,3 +11,12 @@ def get_input(day: int) -> List[str]:
         raw_lines = f.readlines()
 
     return [line.strip("\n") for line in raw_lines]
+
+
+def print_answer(part: int, answer: str or int):
+    """
+    Print the answer of the puzzle
+    :param part: The solution part (1 or 2)
+    :param answer: The answer - either a string or an int
+    """
+    print(f"ANSWER TO PART {part}: {answer}")
