@@ -27,7 +27,8 @@ def parse_data(puzzle_input: List[str]) -> Dict[int, List[Tuple[int, int, int]]]
     parsed_puzzle = defaultdict(list)
 
     for line in puzzle_input:
-        # The first value in this list will be "Game XX", the rest will be the rounds
+        # The first value in this list will be "Game XX", the rest will be the
+        # rounds
         line_pieces = re.split("[:;]", line)
 
         game_index = int(line_pieces[0][5:])
@@ -41,9 +42,10 @@ def parse_data(puzzle_input: List[str]) -> Dict[int, List[Tuple[int, int, int]]]
                 num, color = entry.split(" ")
                 colors_and_numbers_dict[color] = int(num)
 
-            parsed_puzzle[game_index].append(RBG(red=colors_and_numbers_dict[RED],
-                                                 green=colors_and_numbers_dict[GREEN],
-                                                 blue=colors_and_numbers_dict[BLUE]))
+            parsed_puzzle[game_index].append(
+                RBG(red=colors_and_numbers_dict[RED],
+                    green=colors_and_numbers_dict[GREEN],
+                    blue=colors_and_numbers_dict[BLUE]))
 
     return parsed_puzzle
 
@@ -71,6 +73,40 @@ def is_possible_game_with_replacement(round: RBG) -> bool:
     return round.red <= 12 and round.green <= 13 and round.blue <= 14
 
 
+def determine_powers(parsed_data: Dict[int, List[Tuple[int, int, int]]]) -> int:
+    """
+    For every game, determine the minimum number of cubes needed to make all rounds possible.
+    The power of each game is equal to # red * # green * # blue. Return the sum of the powers
+    :param parsed_data: The parsed puzzle
+    :returns: The sum of the powers
+    """
+    sum = 0
+    for rounds in parsed_data.values():
+        red, green, blue = determine_min_blocks(rounds)
+
+        sum += (red * green * blue)
+
+    return sum
+
+
+def determine_min_blocks(rounds: List[Tuple[int, int, int]]) -> Tuple[int, int, int]:
+    """
+    Determine the min num of blocks needed for the game.
+    :param rounds: The rounds for a game
+    :returns: The min num of red, green, and blue cubes needed for all rounds to be possible
+    """
+    reds = []
+    greens = []
+    blues = []
+
+    for round in rounds:
+        reds.append(round.red)
+        greens.append(round.green)
+        blues.append(round.blue)
+
+    return max(reds), max(greens), max(blues)
+
+
 if __name__ == "__main__":
     puzzle_input = get_input(2)
 
@@ -79,3 +115,7 @@ if __name__ == "__main__":
     answer_part_1 = check_game(parsed_data)
 
     print_answer(1, answer_part_1)
+
+    answer_part_2 = determine_powers(parsed_data)
+
+    print_answer(2, answer_part_2)
